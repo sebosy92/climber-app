@@ -1,6 +1,6 @@
 const request = require ('supertest')
-const app = require ('../app')
-const User = require ('../models/user')
+const app = require ('../src/app')
+const User = require ('../src/models/user')
 const { userOneId, userOne, setupDB } = require('./fixtures/db')
 
 beforeEach(setupDB)
@@ -39,3 +39,24 @@ test ('Should login user', async () => {
         password: userOne.password
     }).expect(200)
 })
+
+test ('Should upload avatar image', async () => {
+    await request(app)
+        .post('/users/me/avatar')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .attach('avatar','tests/fixtures/avatar.jpg')
+        .expect(200)
+    const user = await User.findById(userOneId)
+    expect(user.avatar).toEqual(expect.any(Buffer))
+
+})
+
+test ('Should delete users avatar', async () => {
+    await request(app)
+        .delete('/users/me/avatar')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .expect(200)
+    const user = await User.findById(userOneId)
+    expect(user.avatar).toEqual(undefined)
+})
+

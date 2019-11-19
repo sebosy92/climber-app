@@ -43,8 +43,24 @@ const userSchema = new mongoose.Schema({
             require: true,
             minlength: 6
         }
-    }]
+    }],
+
+    avatar: {
+        type: Buffer
+    }
 })
+
+
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+    
+    delete userObject.password
+    delete userObject.tokens
+    delete userObject.avatar
+
+    return userObject
+}
 
 
 // Hasing password
