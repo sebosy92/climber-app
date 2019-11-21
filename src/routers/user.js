@@ -9,6 +9,7 @@ const sharp = require ('sharp')
 router.post('/users', async (req, res) => {
     const user = new User (req.body)
         try {
+            user.type = 'user'
             await user.save()
            const token = await user.createLoginToken()
             res.status(201).send({user, token})
