@@ -5,7 +5,6 @@ const auth = require ('../middleware/auth')
 const multer = require ('multer')
 const sharp = require ('sharp')
 const Rock = require ('../models/rock')
-const Route = require ('../models/route')
 const isAdmin = require ('../middleware/is_admin')
 
 
@@ -47,17 +46,19 @@ router.post('/admin/newrock/:rockName', auth, isAdmin, topo.single('topo'), asyn
 })
 
 router.post('/admin/newroute', auth, isAdmin, async (req, res) => {
-    const route = new Route (req.body)
+    console.log(req.body)
     try {
-        const rock = Rock.findOne({name: req.body.rock})
+        const rock = Rock.findOne({name: req.body.name})
         if (!rock) {
             return status(404).send('Rock must be valid!')
         }
-        await route.save()
-        res.status(201).send(route)
+        rock.routes = rock.routes.concat( req.body.routes )
+        await rock.save()
+        res.status(201).send(rock)
     } catch (e) {
         res.status(400).send()
     }
+    res.send()
 })
 
 

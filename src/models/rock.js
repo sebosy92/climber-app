@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Route = require('./route')
 
 const rockSchema = new mongoose.Schema ({
     name: {
@@ -30,14 +29,34 @@ const rockSchema = new mongoose.Schema ({
     },
     topo: {
         type: Buffer
-    }
-})
+    },
+    routes: [{
 
-rockSchema.virtual('routes', {
-    ref: 'Route',
-    localField: 'name',
-    foreignField: 'rock'
-  });
+        routeName: {
+            type: String,
+            required: true,
+        },
+        numerOnTopo: {
+            type: Number,
+            required: true
+        },
+        rings: {
+            type: String,
+            required: true
+        },
+        grade: {
+            type: String,
+            required: true
+        },
+        length: {
+            type: Number,
+            required: true
+        },
+        author: {
+            type: String
+        }
+    }]
+})
 
 
 const Rock = mongoose.model('Rock', rockSchema)
